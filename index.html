@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Student Wellbeing Score</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=Figtree:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand">
+      <div class="logo" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12h4l2.5-6 4 12 2.5-6H21"/></svg>
+      </div>
+      <div><h1>Wellbeing Score</h1><small>Student mental health predictor</small></div>
+    </div>
+    <div class="tools">
+      <button class="pill" id="statusPill" type="button" title="Re-check API connection">
+        <span class="dot" id="statusDot"></span><span id="statusText">Checking API…</span>
+      </button>
+      <button class="pill" id="settingsBtn" type="button" aria-haspopup="dialog">API settings</button>
+      <button class="pill" id="themeBtn" type="button" aria-label="Toggle theme">Theme</button>
+    </div>
+  </header>
+
+  <section class="intro">
+    <h2>How is daily life affecting wellbeing?</h2>
+    <p>Fill in a student's habits, sleep and screen time. The model returns a predicted mental health score you can compare across scenarios.</p>
+  </section>
+
+  <div class="banner" id="banner" role="alert"></div>
+
+  <div class="layout">
+    <form class="card" id="form" novalidate>
+      <fieldset>
+        <legend>About the student</legend>
+        <p class="hint">Basic profile details.</p>
+        <div class="grid">
+          <div class="field" data-f="Age">
+            <label for="Age">Age</label>
+            <input class="input" id="Age" name="Age" type="number" inputmode="numeric" min="10" max="100" step="1" value="20" required>
+            <span class="err">Enter an age from 10 to 100.</span>
+          </div>
+          <div class="field" data-f="Country">
+            <label for="Country">Country</label>
+            <input class="input" id="Country" name="Country" list="countries" value="India" placeholder="e.g. India" required autocomplete="off">
+            <datalist id="countries"></datalist>
+            <span class="err">Enter a country.</span>
+          </div>
+          <div class="field">
+            <span class="lbl" id="g-l">Gender</span>
+            <div class="seg" role="radiogroup" aria-labelledby="g-l" id="Gender"></div>
+          </div>
+          <div class="field">
+            <span class="lbl" id="a-l">Academic level</span>
+            <div class="seg" role="radiogroup" aria-labelledby="a-l" id="Academic_Level"></div>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Social media</legend>
+        <p class="hint">What they use and why.</p>
+        <div class="grid">
+          <div class="field">
+            <label for="Most_Used_Platform">Most used platform</label>
+            <select class="input" id="Most_Used_Platform" name="Most_Used_Platform"></select>
+          </div>
+          <div class="field">
+            <label for="Purpose_Of_Use">Main purpose</label>
+            <select class="input" id="Purpose_Of_Use" name="Purpose_Of_Use"></select>
+          </div>
+          <div class="field">
+            <label for="Avg_Daily_Usage_Hours">Daily usage</label>
+            <div class="range-row"><input type="range" id="Avg_Daily_Usage_Hours" min="0" max="24" step="0.5" value="5"><output for="Avg_Daily_Usage_Hours"></output></div>
+          </div>
+          <div class="field" data-f="Daily_Unlocks">
+            <label for="Daily_Unlocks">Phone unlocks per day</label>
+            <input class="input" id="Daily_Unlocks" name="Daily_Unlocks" type="number" inputmode="numeric" min="0" step="1" value="60" required>
+            <span class="err">Enter a whole number, 0 or more.</span>
+          </div>
+        </div>
+      </fieldset>
+
+      <fieldset>
+        <legend>Daily routine</legend>
+        <p class="hint">Hours in a typical day.</p>
+        <div class="grid">
+          <div class="field">
+            <label for="Study_Hours">Study hours</label>
+            <div class="range-row"><input type="range" id="Study_Hours" min="0" max="16" step="0.5" value="4"><output for="Study_Hours"></output></div>
+          </div>
+          <div class="field">
+            <label for="Sleep_Hours_Per_Night">Sleep per night</label>
+            <div class="range-row"><input type="range" id="Sleep_Hours_Per_Night" min="0" max="24" step="0.5" value="7"><output for="Sleep_Hours_Per_Night"></output></div>
+          </div>
+          <div class="field">
+            <label for="Physical_Activity_Hours">Physical activity</label>
+            <div class="range-row"><input type="range" id="Physical_Activity_Hours" min="0" max="2" step="0.25" value="1"><output for="Physical_Activity_Hours"></output></div>
+            <span class="hint" style="margin:0">The model accepts up to 2 hours.</span>
+          </div>
+          <div class="field">
+            <span class="lbl" id="s-l">Stress level</span>
+            <div class="seg" role="radiogroup" aria-labelledby="s-l" id="Stress_Level"></div>
+          </div>
+        </div>
+      </fieldset>
+
+      <div class="actions">
+        <button class="btn primary" id="submitBtn" type="submit">Predict score</button>
+        <button class="btn ghost" id="sampleBtn" type="button">Random example</button>
+        <button class="btn ghost" id="resetBtn" type="button">Reset</button>
+        <label class="switch"><input type="checkbox" id="live"> Update as I change values</label>
+      </div>
+    </form>
+
+    <aside class="side" aria-live="polite">
+      <div class="card gauge-card">
+        <svg class="gauge" viewBox="0 0 240 150" role="img" aria-label="Predicted score gauge">
+          <path class="track" d="M 20 130 A 100 100 0 0 1 220 130" fill="none" stroke-width="18" stroke-linecap="round"/>
+          <path class="arc" id="arc" d="M 20 130 A 100 100 0 0 1 220 130" fill="none" stroke="var(--accent)" stroke-width="18" stroke-linecap="round" stroke-dasharray="314.16" stroke-dashoffset="314.16"/>
+          <text id="gaugeNum" x="120" y="110" text-anchor="middle" font-size="46" font-weight="800" fill="var(--ink)">–</text>
+          <text x="120" y="132" text-anchor="middle" font-size="12" fill="var(--muted)">out of 10</text>
+          <text x="20" y="148" text-anchor="middle" font-size="11" fill="var(--muted)">0</text>
+          <text x="220" y="148" text-anchor="middle" font-size="11" fill="var(--muted)">10</text>
+        </svg>
+        <div class="verdict" id="verdict">No result yet</div>
+        <p class="sub" id="verdictSub">Fill the form and press Predict score to see the result here.</p>
+      </div>
+
+      <div class="card" id="insightCard" hidden>
+        <h3>What stands out</h3>
+        <ul class="insights" id="insights"></ul>
+      </div>
+
+      <div class="card">
+        <h3>Your predictions</h3>
+        <p class="empty" id="histEmpty">Each prediction is saved here so you can compare scenarios.</p>
+        <ul class="hist" id="hist"></ul>
+        <svg class="spark" id="spark" viewBox="0 0 300 46" preserveAspectRatio="none" hidden></svg>
+      </div>
+    </aside>
+  </div>
+
+  <p class="disclaimer">This tool shows a model's estimate based on survey-style inputs. It is not a diagnosis or medical advice. If you or someone you know is struggling, please talk to a counsellor or doctor.</p>
+</div>
+
+<dialog id="settings">
+  <h3>API settings</h3>
+  <p class="hint">Where your FastAPI backend is running. Leave blank to auto-detect.</p>
+  <div class="field">
+    <label for="baseUrl">Base URL</label>
+    <input class="input" id="baseUrl" type="url" placeholder="http://127.0.0.1:2000" autocomplete="off">
+  </div>
+  <div class="actions" style="border:0;padding-top:6px">
+    <button class="btn primary" id="saveSettings" type="button">Save and test</button>
+    <button class="btn ghost" id="closeSettings" type="button">Cancel</button>
+  </div>
+</dialog>
+
+<script src="script.js"></script>
+</body>
+</html>
