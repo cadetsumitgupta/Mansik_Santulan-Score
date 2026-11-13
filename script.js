@@ -4,7 +4,7 @@
   /* ---------- Config ---------- */
   // Ports tried in order. Your message mentioned both 2200 and 2000, so both are covered.
   const CANDIDATE_URLS = [
-    'http://127.0.0.1:2000'
+    'http://127.0.0.1:2200'
   ];
   const STORE_KEY = 'mhs_api_url';
   const OPTIONS = {
