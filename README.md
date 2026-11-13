@@ -2,13 +2,15 @@
 
 A modern, full-stack web application that predicts a student's mental health score based on their social media usage, academic details, and daily lifestyle habits. 
 
+**🌐 Live Demo:** [https://mansik-santulan-score-1y0t.onrender.com/](https://mansik-santulan-score-1y0t.onrender.com/)
+
 The project uses a machine learning model trained on student data, served via a FastAPI backend, and features a responsive frontend built with Vanilla HTML, CSS, and JavaScript.
 
 ## 🚀 Features
 * **Predictive ML Model:** Utilizes a custom `scikit-learn` pipeline (including data preprocessing, encoding, and a RandomForest regressor) to calculate a mental wellbeing score.
 * **FastAPI Backend:** Lightweight, high-performance REST API for real-time predictions.
 * **Interactive Frontend:** Clean, modern web interface that communicates seamlessly with the API.
-* **Cloud Deployment:** Configured for cloud hosting via Render.
+* **Cloud Deployment:** Fully hosted and deployed via Render.
 
 ## 🛠️ Tech Stack
 * **Backend:** Python, FastAPI, Uvicorn, Pydantic
@@ -17,7 +19,7 @@ The project uses a machine learning model trained on student data, served via a 
 * **Deployment:** Render, GitHub
 
 ## 📋 Prerequisites
-Make sure you have Python 3.9+ and Git installed on your system.
+Make sure you have Python 3.9+ and Git installed on your system if you want to run this locally.
 
 ## ⚙️ Local Installation & Setup
 
